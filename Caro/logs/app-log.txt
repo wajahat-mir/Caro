@@ -1,0 +1,2 @@
+2019-06-18 17:56:38.3057|INFO|Caro.Controllers.HomeController|Log Test
+2019-06-18 17:56:46.7617|INFO|Caro.Controllers.HomeController|Log Test

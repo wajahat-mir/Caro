@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Caro.Areas.admin.Models.ScheduleViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+
+    @using (Html.BeginForm())
+    {
+<p>
+    Make: @Html.DropDownList("CarMake", "All") <input type="submit" value="Filter" />
+</p>
+    }
+</p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.modelYear)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Make)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Model)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.modelYear)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Make)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Model)
+                </td>
+                <td>
+                    @Html.ActionLink("View Services", "Index", "Services", new { id = item.ScheduleID }, new { }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ScheduleID })
+                </td>
+            </tr>
+        }
+
+    </table>
