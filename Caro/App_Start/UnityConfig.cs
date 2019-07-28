@@ -4,6 +4,7 @@ using Caro.Controllers;
 using Caro.Models;
 using Caro.Profiles;
 using Caro.Repository;
+using Caro.Services;
 using System.Web.Mvc;
 using Unity;
 using Unity.Injection;
@@ -29,6 +30,8 @@ namespace Caro
 
             container.RegisterType<IScheduleRepository, ScheduleRepository>();
             container.RegisterType<IServiceRepository, ServiceRepository>();
+
+            container.RegisterType<IUserService, UserService>();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }

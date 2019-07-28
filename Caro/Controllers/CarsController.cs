@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using Caro.Models;
 using Caro.Repository;
+using Caro.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Http;
 
@@ -14,16 +15,18 @@ namespace Caro.Controllers
     {
         private ICarRepository _carRepository;
         private IMapper _mapper;
+        private readonly IUserService _userService;
 
-        public CarsController(ICarRepository carRepository, IMapper mapper)
+        public CarsController(ICarRepository carRepository, IMapper mapper, IUserService userService)
         {
             _carRepository = carRepository;
             _mapper = mapper;
+            _userService = userService;
         }
 
         public ActionResult Index()
         {
-            string userId = User.Identity.GetUserId();
+            string userId = _userService.GetCurrentUserId(User);
             var cars = _carRepository.GetAllCars(userId);
             var carViewModel = _mapper.Map<IEnumerable<Car>, IEnumerable<CarViewModel>>(cars);
             return View(carViewModel);

@@ -1,50 +1,38 @@
 ﻿using AutoMapper;
 using Caro.Controllers;
 using Caro.Models;
+using Caro.Profiles;
 using Caro.Repository;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Caro.Services;
+using Caro.Tests.Services;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
+using Xunit;
 
 namespace Caro.Tests.Controllers
 {
-    [TestClass]
     public class CarsControllerTest
     {
-        [TestMethod]
+        private static IMapper mapper = MappingProfile.InitializeAutoMapper().CreateMapper();
+
+        [Fact]
         public void Index()
         {
-            var repo = new Mock<ICarRepository>();
-            repo.Setup(r => r.GetAllCars("123"))
-                .Returns(GetTestCars());
+            var repo = MockReposService.BuildMockCarRepo().AddFunction("GetAllCars");
+            var userServiceMock = MockUserService.BuildMockUser().AddFunction("GetCurrentUserId");
+            
+            var controller = new CarsController(repo.Object, mapper, userServiceMock.Object);
+            var result = controller.Index();
 
-            CarViewModel carViewModel = new CarViewModel();
-            var mapper = new Mock<IMapper>();
-            mapper.Setup(x => x.Map<CarViewModel>(It.IsAny<Car>()))
-                .Returns(carViewModel);
-
-            var user = new Mock<IPrincipal>();
-
-
-            var controller = new CarsController(repo.Object, mapper.Object);
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<IEnumerable<CarViewModel>>(viewResult.ViewData.Model);
+            Assert.Equal(3, model.Count());
         }
 
 
-        private List<Car> GetTestCars()
-        {
-            var cars = new List<Car>()
-                {
-                    new Car{ Make="Lexus", ApplicationUserID="123"},
-                    new Car{ Make="Toyota", ApplicationUserID="123"},
-                    new Car{ Make="Acura", ApplicationUserID="321"}
-                };
-            return cars;
-        }
+        
     }
 }
